@@ -41,12 +41,11 @@ export default class App extends Component {
     }
   }
 
-  // Add contact
   handleAddContact = contact => {
     const { contacts } = this.state;
     const { name } = contact;
 
-    // Verify contact
+
     if (contacts.some(contact => contact.name === name)) {
       Notify.failure(`${name} is already in contacts`);
       return;
@@ -57,7 +56,7 @@ export default class App extends Component {
     });
   };
 
-  // Delete contact
+
   handleDeleteContact = id => {
     this.setState(prevState => {
       return {
@@ -66,12 +65,12 @@ export default class App extends Component {
     });
   };
 
-  // Add filter
+
   handleFilter = e => {
     this.setState({ filter: e.target.value });
   };
 
-  // Filter
+
   contactFilter = () => {
     const { contacts, filter } = this.state;
 

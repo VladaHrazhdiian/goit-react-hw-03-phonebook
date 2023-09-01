@@ -1,22 +1,11 @@
 import styled from 'styled-components';
 
 export const Form = styled.form`
-  width: 300px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 
-  label {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-
-    input {
-      height:25px;
-      border-radius: 6px;
-      font-size: 18px;
-    }
-  }
-
+  
   button {
     height: 30px;
     margin-block: 20px;
