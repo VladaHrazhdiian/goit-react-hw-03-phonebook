@@ -1,10 +1,18 @@
 import { Component } from 'react';
-import { Notify } from 'notiflix';
-import './App.css';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+
+import LocalStorageAPI from 'services/localStorageAPI';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList';
 import Filter from './Filter';
+
+const lsAPI = new LocalStorageAPI();
+const KEY = 'phonebook-contacts';
+
+document.title = 'HW-3 Phonebook';
 
 export default class App extends Component {
   state = {
@@ -18,14 +26,28 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    document.title = 'HW-2 Phonebook';
+    const contacts = lsAPI.getItems(KEY);
+
+    if (contacts) {
+      this.setState({ contacts });
+    }
   }
 
+  componentDidUpdate(_, prevState) {
+    const { contacts } = this.state;
+
+    if (prevState.contacts !== contacts) {
+      lsAPI.setItems(KEY, contacts);
+    }
+  }
+
+  // Add contact
   handleAddContact = contact => {
     const { contacts } = this.state;
     const { name } = contact;
 
-    if (contacts.find(existingContact => existingContact.name === name)) {
+    // Verify contact
+    if (contacts.some(contact => contact.name === name)) {
       Notify.failure(`${name} is already in contacts`);
       return;
     }
@@ -35,6 +57,7 @@ export default class App extends Component {
     });
   };
 
+  // Delete contact
   handleDeleteContact = id => {
     this.setState(prevState => {
       return {
@@ -43,32 +66,48 @@ export default class App extends Component {
     });
   };
 
+  // Add filter
   handleFilter = e => {
     this.setState({ filter: e.target.value });
   };
 
-  getFilteredContacts = () => {
+  // Filter
+  contactFilter = () => {
     const { contacts, filter } = this.state;
+
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(filter.toLowerCase().trim())
     );
   };
 
   render() {
-    const { filter } = this.state;
-    const filteredContacts = this.getFilteredContacts();
+    const { contacts, filter } = this.state;
 
     return (
-      <div>
-        <h1>Phonebook</h1>
+      <Container className="container" maxWidth="sm" sx={{ mt: 4 }}>
+        <Typography
+          variant="h1"
+          gutterBottom
+          align="center"
+          sx={{ fontSize: '40px', fontWeight: 700, mb: 2 }}
+        >
+          Phonebook
+        </Typography>
         <ContactForm onAddContact={this.handleAddContact} />
-        <h2>Contacts</h2>
+        <Typography
+          variant="h2"
+          gutterBottom
+          align="center"
+          sx={{ fontSize: '30px', fontWeight: 700, mb: 2 }}
+        >
+          Contacts
+        </Typography>
         <Filter onFilter={this.handleFilter} filter={filter} />
         <ContactList
-          contacts={filteredContacts}
+          contacts={this.contactFilter(contacts)}
           onDeleteContact={this.handleDeleteContact}
         />
-      </div>
+      </Container>
     );
   }
 }

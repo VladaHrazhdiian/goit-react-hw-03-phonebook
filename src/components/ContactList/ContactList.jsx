@@ -5,20 +5,29 @@ import ContactItem from '../ContactItem';
 const ContactList = ({ contacts, onDeleteContact }) => {
   return (
     <List>
-      {contacts.map(contact => (
-        <ContactItem
-          key={contact.id}
-          contact={contact}
-          onDeleteContact={onDeleteContact}
-        />
-      ))}
+      {contacts.map(contact => {
+        const { id } = contact;
+        return (
+          <ContactItem
+            key={id}
+            contact={contact}
+            onDeleteContact={onDeleteContact}
+          />
+        );
+      })}
     </List>
   );
 };
 
+export default ContactList;
+
 ContactList.propTypes = {
-  contacts: PropTypes.array.isRequired,
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   onDeleteContact: PropTypes.func.isRequired,
 };
-
-export default ContactList;
