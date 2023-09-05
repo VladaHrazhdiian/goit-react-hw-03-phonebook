@@ -44,12 +44,12 @@ export default class App extends Component {
   handleAddContact = contact => {
     const { contacts } = this.state;
     const { name } = contact;
+    const lowercaseName = name.toLowerCase();
 
-
-    if (contacts.some(contact => contact.name === name)) {
-      Notify.failure(`${name} is already in contacts`);
-      return;
-    }
+  if (contacts.some(existingContact => existingContact.name.toLowerCase() === lowercaseName)) {
+    Notify.failure(`${name} is already in contacts`);
+    return;
+  }
 
     this.setState(prevState => {
       return { contacts: [...prevState.contacts, contact] };
@@ -73,6 +73,8 @@ export default class App extends Component {
 
   contactFilter = () => {
     const { contacts, filter } = this.state;
+
+    
 
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(filter.toLowerCase().trim())
